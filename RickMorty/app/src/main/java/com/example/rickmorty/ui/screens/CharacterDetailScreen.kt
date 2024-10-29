@@ -2,6 +2,8 @@ package com.example.rickmorty.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -56,45 +58,86 @@ fun CharacterDetailScreen(id: Int, innerPaddingValues: PaddingValues) {
         }
     } else {
         character?.let {
-            Column(
+            // LazyColumn para crear la tabla
+            LazyColumn(
                 modifier = Modifier
                     .padding(innerPaddingValues)
                     .fillMaxSize()
             ) {
-                // Card con diseño galáctico
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(16.dp), // Agrega bordes redondeados
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.Transparent // Haz el fondo del Card transparente
-                    )
-                ) {
-                    Box(
+                // Item para la imagen
+                item {
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(
-                                brush = Brush.horizontalGradient(
-                                    colors = listOf(Color(0xFF800080), Color(0xFF000000)),
-                                    tileMode = TileMode.Clamp
-                                )
-                            )
-                            .padding(16.dp)
+                            .padding(15.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.Transparent
+                        )
                     ) {
-                        Column {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    brush = Brush.horizontalGradient(
+                                        colors = listOf(Color(0xFF800080), Color(0xFF000000)),
+                                        tileMode = TileMode.Clamp
+                                    )
+                                )
+                                .padding(8.dp)
+                        ) {
                             AsyncImage(
                                 model = it.image,
                                 contentDescription = it.name,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(200.dp)
-                                    .padding(bottom = 16.dp)
+                                    .padding(bottom = 16.dp, top = 16.dp)
                             )
-                            Text(text = "Name: ${it.name}", color = Color.White, textAlign = TextAlign.Center)
-                            Text(text = "Species: ${it.species}", color = Color.White, textAlign = TextAlign.Center)
-                            Text(text = "Status: ${it.status}", color = Color.White, textAlign = TextAlign.Center)
-                            Text(text = "Gender: ${it.gender}", color = Color.White, textAlign = TextAlign.Center)
+                        }
+                    }
+                }
+
+                // Items para los datos en filas
+                items(
+                    listOf(
+                        "Name" to it.name,
+                        "Species" to it.species,
+                        "Status" to it.status,
+                        "Gender" to it.gender,
+                        "Type" to it.type,
+                        "Episode" to it.episode.size.toString(),
+                        "Location" to it.location.name,
+                        "Origin" to it.origin.name
+                    )
+                ) { (key, value) ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.Transparent
+                        )
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    brush = Brush.horizontalGradient(
+                                        colors = listOf(Color(0xFF800080), Color(0xFF000000)),
+                                        tileMode = TileMode.Clamp
+                                    )
+                                )
+                                .padding(8.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(text = key, color = Color.White)
+                                Text(text = value, color = Color.White)
+                            }
                         }
                     }
                 }

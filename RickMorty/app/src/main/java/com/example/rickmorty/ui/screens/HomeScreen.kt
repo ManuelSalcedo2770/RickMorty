@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -32,7 +33,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(innerPadding: PaddingValues, navController: NavController) {
     val scope = rememberCoroutineScope()
@@ -51,7 +51,7 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController) {
                     .create(CharacterService::class.java)
 
                 // Se obtiene la lista de personajes
-                val response = characterService.getCharacters(1)  // 1 es el número de página
+                val response = characterService.getCharacters(1)
                 characters = response.results
                 Log.i("HomeScreenResponse", characters.toString())
                 isLoading = false
@@ -77,17 +77,15 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController) {
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            // Agrega un item para el header con la foto del título, ocupando 2 columnas
             item(span = { GridItemSpan(2) }) {
                 Image(
                     painter = rememberAsyncImagePainter("https://cms.rhinoshield.app/public/images/ip_page_rick_and_morty_banner_mobile_de62ff184b.jpg"),
                     contentDescription = "Rick and Morty Banner",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(150.dp) // Ajusta la altura según sea necesario
+                        .height(200.dp)
                 )
             }
-
             // Items para los personajes
             items(characters) { character ->
                 Card(
@@ -98,20 +96,19 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController) {
                         .clickable {
                             navController.navigate("character_detail/${character.id}")
                         },
-                    // Agrega un fondo galáctico
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.Transparent // Haz el fondo del Card transparente
+                        containerColor = Color.Transparent
                     )
                 ) {
                     Box(modifier = Modifier
                         .fillMaxSize()
-                        .background( // Agrega un fondo degradado
+                        .background(
                             brush = Brush.horizontalGradient(
                                 colors = listOf(
                                     Color(0xFF800080),
                                     Color(0xFF000000)
-                                ), // Colores del degradado
-                                tileMode = TileMode.Clamp // Modo de repetición del degradado
+                                ),
+                                tileMode = TileMode.Clamp
                             )
                         )
                     ) {
@@ -121,15 +118,25 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController) {
                                 contentDescription = character.name,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(150.dp) // Ajusta la altura según sea necesario
+                                    .height(150.dp)
+                                    .padding(13.dp)
                             )
                             Text(
                                 text = character.name,
                                 style = TextStyle(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp,
-                                    color = Color.White // Cambia el color del texto a blanco
+                                    color = Color.White
                                 )
+                            )
+                            Text(
+                                text = "Specie: " + character.species,
+                                style = TextStyle(
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 12.sp,
+                                    color = Color.White
+                                ),
+                                textAlign = TextAlign.Center
                             )
                         }
                     }
